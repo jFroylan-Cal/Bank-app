@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Transaction } from '../../transactions/entities/transaction.entity';
 
 @Entity({ name: 'Users' })
 export class User {
@@ -14,10 +15,15 @@ export class User {
   @Column({ name: 'User_strAddress', type: 'varchar', length: 32 })
   address: string;
 
-  @Column({ name: 'User_strAccount', type: 'varchar', length: 32 })
+  @Column({
+    name: 'User_strAccount',
+    type: 'varchar',
+    length: 32,
+    unique: true,
+  })
   account: string;
 
-  @Column({ name: 'User_strPassword', type: 'varchar', length: 20 })
+  @Column({ name: 'User_strPassword', type: 'varchar' })
   password: string;
 
   @Column({ name: 'User_strPhone', type: 'varchar', length: 16 })
@@ -29,10 +35,17 @@ export class User {
   @Column({ name: 'User_dtmDateRegistration', type: 'date' })
   dateRegistration: string;
 
-  @Column({ name: 'User_strRol', type: 'text', array: true, default: ['user'] })
+  @Column({
+    name: 'User_strRol',
+    type: 'text',
+    array: true,
+    default: ['user'],
+  })
   roles: string[];
 
   @Column({ name: 'User_BoolStatus', type: 'bool', default: true })
   isActive: boolean;
 
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
 }

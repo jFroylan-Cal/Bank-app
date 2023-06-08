@@ -1,4 +1,5 @@
 import { IsString, MaxLength } from 'class-validator';
+import { ValidRoles } from '../enums/valid-roles.enum';
 
 export class CreateAuthDto {
   @IsString()
@@ -19,4 +20,7 @@ export class CreateAuthDto {
   @IsString()
   @MaxLength(16)
   phone: string;
+
+  @IsString()
+  roles: string[];
 }

@@ -27,10 +27,14 @@ export class AuthService {
     try {
       let dateCreated: string;
       dateCreated = new Date().toISOString();
-      const { password, account, name, lastName } = createAuthDto;
+      const { password, account, name, lastName, address, phone, roles } =
+        createAuthDto;
       const user = this.userRepository.create({
         account: account,
         name: name,
+        address: address,
+        phone: phone,
+        roles: roles,
         dateRegistration: dateCreated,
         eSignature: generateESignature(),
         lastName: lastName,
@@ -47,15 +51,15 @@ export class AuthService {
     const { account, password } = loginDto;
     const user = await this.userRepository.findOne({
       where: { account },
-      select: { id: true, password: true },
+      select: { id: true, account: true, password: true },
     });
     if (!user) {
       throw new UnauthorizedException('Credentials are not valid');
     }
-    if (bcrypt.compareSync(password, user.password)) {
+    if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException('Credentials are not valid');
     }
-    return true;
+    return { token: this.getJwtToken({ id: user.id }) };
   }
 
   async update(id: number, updateAuthDto: UpdateAuthDto) {
@@ -67,11 +71,10 @@ export class AuthService {
       phone,
       password,
     });
-     user.address = address;
-     user.phone = phone
-     user.password =  bcrypt.hashSync(password, 10),
-     user.isActive =isActive;
-     this.userRepository.save(user);
+    user.address = address;
+    user.phone = phone;
+    (user.password = bcrypt.hashSync(password, 10)), (user.isActive = isActive);
+    this.userRepository.save(user);
     return user;
   }
 
