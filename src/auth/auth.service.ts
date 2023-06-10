@@ -41,7 +41,7 @@ export class AuthService {
         password: bcrypt.hashSync(password, 10),
       });
       this.userRepository.save(user);
-      return { token: this.getJwtToken({ id: user.id }) };
+      return { token: this.getJwtToken({ id: user.id }), userId: user.id, userName: user.name };
     } catch (error) {
       this.handleErrors(error);
     }
