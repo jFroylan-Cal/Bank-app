@@ -8,6 +8,7 @@ import { Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Transaction } from './entities/transaction.entity';
+import { OperationType } from './enum/operationType.enum';
 
 @Injectable()
 export class TransactionsService {
@@ -34,10 +35,26 @@ export class TransactionsService {
   }
 
   async findTransaction(id: number) {
-    const transaction = await this.transactionRepository.findAndCount({
+    const transaction = await this.transactionRepository.find({
       where: { user: { id: id } },
     });
-    return transaction;
+    let totalPayments = 0;
+    let totalDeposits = 0;
+    let totalTransfers = 0;
+
+    transaction.forEach((element) => {
+      if (element.operationType == OperationType.deposit) {
+        totalDeposits = element.amount + totalDeposits;
+      }
+      if (element.operationType == OperationType.payment) {
+        totalPayments = element.amount + totalPayments;
+      }
+
+      if (element.operationType == OperationType.transfer) {
+        totalTransfers = element.amount + totalTransfers;
+      }
+    });
+    return { transaction, totalDeposits, totalPayments, totalTransfers };
   }
 
   async getStateAccount(id: number) {
