@@ -60,7 +60,7 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid');
     }
    
-    return { token: this.getJwtToken({ id: user.id }), userType:user.roles };
+    return { token: this.getJwtToken({ id: user.id }), user };
   }
 
   async update(id: number, updateAuthDto: UpdateAuthDto) {
