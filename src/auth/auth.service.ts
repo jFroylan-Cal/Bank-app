@@ -43,7 +43,7 @@ export class AuthService {
       this.userRepository.save(user);
       return {
         token: this.getJwtToken({ id: user.id }),
-        userData: { account, name, address, phone, roles, lastName, userESignature: user.eSignature },
+        userData: { account, name, address, phone, roles, lastName, userESignature: user.eSignature, id: user.id },
       };
     } catch (error) {
       this.handleErrors(error);
