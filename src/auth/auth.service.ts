@@ -51,7 +51,7 @@ export class AuthService {
     const { account, password } = loginDto;
     const user = await this.userRepository.findOne({
       where: { account },
-      select: { id: true, account: true, password: true, roles: true },
+      select: { id: true, account: true, password: true, roles: true, name: true, lastName: true, phone:true, address: true},
     });
     if (!user) {
       throw new UnauthorizedException('Credentials are not valid');
