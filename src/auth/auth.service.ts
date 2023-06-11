@@ -41,7 +41,10 @@ export class AuthService {
         password: bcrypt.hashSync(password, 10),
       });
       this.userRepository.save(user);
-      return { token: this.getJwtToken({ id: user.id }), userId: user.id, userName: user.name };
+      return {
+        token: this.getJwtToken({ id: user.id }),
+        userData: { account, name, address, phone, roles, lastName, userESignature: user.eSignature },
+      };
     } catch (error) {
       this.handleErrors(error);
     }
@@ -51,7 +54,16 @@ export class AuthService {
     const { account, password } = loginDto;
     const user = await this.userRepository.findOne({
       where: { account },
-      select: { id: true, account: true, password: true, roles: true, name: true, lastName: true, phone:true, address: true},
+      select: {
+        id: true,
+        account: true,
+        password: true,
+        roles: true,
+        name: true,
+        lastName: true,
+        phone: true,
+        address: true,
+      },
     });
     if (!user) {
       throw new UnauthorizedException('Credentials are not valid');
@@ -59,7 +71,7 @@ export class AuthService {
     if (!bcrypt.compareSync(password, user.password)) {
       throw new UnauthorizedException('Credentials are not valid');
     }
-   
+
     return { token: this.getJwtToken({ id: user.id }), user };
   }
 
