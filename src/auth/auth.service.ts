@@ -43,7 +43,16 @@ export class AuthService {
       this.userRepository.save(user);
       return {
         token: this.getJwtToken({ id: user.id }),
-        userData: { account, name, address, phone, roles, lastName, userESignature: user.eSignature, id: user.id },
+        userData: {
+          account,
+          name,
+          address,
+          phone,
+          roles,
+          lastName,
+          userESignature: user.eSignature,
+          id: user.id,
+        },
       };
     } catch (error) {
       this.handleErrors(error);
@@ -86,7 +95,10 @@ export class AuthService {
     });
     user.address = address;
     user.phone = phone;
-    (user.password = bcrypt.hashSync(password, 10)), (user.isActive = isActive);
+    user.isActive = isActive;
+    if (password) {
+      user.password = bcrypt.hashSync(password, 10);
+    }
     this.userRepository.save(user);
     return user;
   }
