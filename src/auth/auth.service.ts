@@ -44,6 +44,7 @@ export class AuthService {
       return {
         token: this.getJwtToken({ id: user.id }),
         user: {
+          id:user.id,
           account,
           name,
           address,
@@ -51,7 +52,6 @@ export class AuthService {
           roles,
           lastName,
           userESignature: user.eSignature,
-          id: user.id,
         },
       };
     } catch (error) {
